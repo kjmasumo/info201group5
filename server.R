@@ -12,19 +12,23 @@ make_request <- function(end_point){
   final
 }
 
-end_point <- "/api/SafetyRatings?format=json"
-years <- make_request(end_point)$ModelYear
+# end_point <- "/api/SafetyRatings?format=json"
+# years <- make_request(end_point)$ModelYear
 
 server <- function(input, output){
   
   curr_car <- reactive({
+    model <- input$models
+    if(!(" " %in% model)){
+      model <- gsub(" ", "%20", input$models)
+    }
     results <- make_request(paste0(
       "/api/SafetyRatings/modelyear/", 
       input$year, 
       "/make/",
       input$makes,
       "/model/",
-      input$models,
+      model,
       "?format=json"
       ))
     results$VehicleId[1]
