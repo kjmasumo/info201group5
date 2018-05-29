@@ -82,25 +82,3 @@ the_server <- function(input, output){
 
 shinyApp(the_ui, the_server)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
