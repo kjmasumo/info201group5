@@ -7,7 +7,7 @@ make_request <- function(end_point){
   final
 }
 
-end_point <- "/api/SafetyRatings?format=json"
+end_point <- "/api/SafetyRatings?format=jsn"
 years <- make_request(end_point)$ModelYear
 
 ui <- fluidPage(
