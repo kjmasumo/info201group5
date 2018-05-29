@@ -15,13 +15,6 @@ make_request <- function(end_point){
 end_point <- "/api/SafetyRatings?format=json"
 years <- make_request(end_point)$ModelYear
 
-# makes <- c()
-# for (year in years){
-#   end_point <- paste0("/api/SafetyRatings/modelyear/", year, "?format=json")
-#   makes <- c(makes, make_request(end_point)$Make)
-# }
-# makes <- unique(makes)
-
 server <- function(input, output){
   
   curr_car <- reactive({
