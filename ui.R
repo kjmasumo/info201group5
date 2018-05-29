@@ -19,6 +19,8 @@ ui <- fluidPage(
         label = "Choose a year",
         choices = years
       ),
+      #selectInput('makes', choices = NULL, label = ""),
+      #selectInput('models', choices = NULL, label = "")
       uiOutput('make_choice'),
       uiOutput('model_choice')
     ),
