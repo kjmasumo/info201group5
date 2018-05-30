@@ -5,7 +5,7 @@ library("dplyr")
 library("ggplot2")
 
 make_request <- function(end_point){
-  base_uri <- "https://one.nhtsa.gov/webapi"
+  base_uri <- "https://webapi.nhtsa.gov"
   response <- GET(paste0(base_uri, end_point))
   body <- content(response, "text")
   parsed <- fromJSON(body)
@@ -36,7 +36,7 @@ server <- function(input, output, session){
     curr_ID <- curr_car()
     results <- make_request(paste0("/api/SafetyRatings/VehicleID/", curr_ID, "?format=json"))
     vehicle_description <- results["VehicleDescription"]
-    results <- select(results, OverallRating, OverallFrontCrashRating, OverallSideCrashRating, RolloverRating)
+    #results <- select(results, OverallRating, OverallFrontCrashRating, OverallSideCrashRating, RolloverRating)
     results[results == "Not Rated"] <- 0
     
     tests <- colnames(results)
