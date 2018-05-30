@@ -73,7 +73,7 @@ ui <- fluidPage(
       "Child Seat Inspection Locations",
       sidebarLayout(
         sidebarPanel(
-          textInput("zip", label = "Zip Code", value = NULL)
+          textInput("zip", label = "Zip Code", value = 90210)
         ),
         mainPanel(
           tableOutput("inspection_location")

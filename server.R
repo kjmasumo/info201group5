@@ -71,6 +71,9 @@ server <- function(input, output, session){
       print("Input Valid Zip Code")
     }
     else {
+      results$Contact <- paste(results$ContactFirstName, results$ContactLastName)
+      results$Address <- paste0(results$AddressLine1, " ", results$City, ", ", results$State, " ", results$Zip)
+      results <- select(results, Organization, Address, Contact, Email, Phone1, OperationHours)
       return(results)
     }
   })
