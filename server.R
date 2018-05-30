@@ -4,7 +4,7 @@ library("knitr")
 library("dplyr")
 
 make_request <- function(end_point){
-  base_uri <- "https://webapi.nhtsa.gov"
+  base_uri <- "https://one.nhtsa.gov/webapi"
   response <- GET(paste0(base_uri, end_point))
   body <- content(response, "text")
   parsed <- fromJSON(body)
