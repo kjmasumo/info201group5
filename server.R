@@ -2,6 +2,7 @@ library("httr")
 library("jsonlite")
 library("knitr")
 library("dplyr")
+library("ggplot2")
 
 make_request <- function(end_point){
   base_uri <- "https://webapi.nhtsa.gov"
