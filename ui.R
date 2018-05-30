@@ -79,8 +79,14 @@ ui <- fluidPage(
           tableOutput("inspection_location")
         )
       )
-    )
+    ),
+  # Stops errors from displaying.
+  tags$style(type="text/css",
+             ".shiny-output-error { visibility: hidden; }",
+             ".shiny-output-error:before { visibility: hidden; }"
   )
 )
+)
+
 
 shinyUI(ui)
