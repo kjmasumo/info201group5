@@ -10,16 +10,23 @@ test1 <- make_request(paste0("/api/SafetyRatings/modelyear/", "2013", "?format=j
 test <- make_request("/api/SafetyRatings/VehicleId/7520?format=json")
 View(test)
 View(test1)
+test2 <- ""
 get_year_info <- function(year){
   for (i in make_request(paste0("/api/SafetyRatings/modelyear/", year, "?format=json"))$Make) {
     for (j in make_request(paste0("/api/SafetyRatings/modelyear/", year, "/make/", i, "?format=json"))$Model) {
       for (h in make_request(paste0("/api/SafetyRatings/modelyear/", year, "/make/", i, "/model/", gsub(" ", "%20", j), "?format=json"))$VehicleId){
         temp <- make_request(paste0("/api/SafetyRatings/VehicleId/", h, "?format=json"))
         #test <- rbind(test, temp)
+        test2 <- c(test2, temp$VehicleDescription[1])
       }
     }
   }
+  test2
 }
+
+make_request(paste0("/api/SafetyRatings/modelyear/", 2013, "?format=json"))$Make
+j <- make_request(paste0("/api/SafetyRatings/modelyear/", 2013, "/make/", "ACURA", "?format=json"))$Model
+j2 <- gsub(" ", "%20", j)
 
 new_thing <- get_year_info("2013")
 new_thing
