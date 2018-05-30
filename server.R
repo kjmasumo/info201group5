@@ -2,9 +2,10 @@ library("httr")
 library("jsonlite")
 library("knitr")
 library("dplyr")
+library("ggplot2")
 
 make_request <- function(end_point){
-  base_uri <- "https://webapi.nhtsa.gov"
+  base_uri <- "https://one.nhtsa.gov/webapi"
   response <- GET(paste0(base_uri, end_point))
   body <- content(response, "text")
   parsed <- fromJSON(body)
@@ -61,6 +62,16 @@ server <- function(input, output, session){
   output$model_choice <- renderUI({
     models <- make_request(paste0("/api/SafetyRatings/modelyear/", input$year, "/make/", input$makes, "?format=json"))$Model
     selectInput('models', label = 'Choose a model', choices = models)
+  })
+  
+  output$inspection_location <- renderTable({
+    results <- make_request(paste0("/api/CSSIStation/zip/", input$zip, "?format=json"))
+    if(!is.data.frame(results)){
+      print("Input Valid Zip Code")
+    }
+    else {
+      return(results)
+    }
   })
 }
 
