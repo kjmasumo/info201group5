@@ -66,20 +66,25 @@ server <- function(input, output, session){
   })
   
   output$inspection_location <- renderTable({
-    results <- make_request(paste0("/api/CSSIStation/zip/", input$zip, "?format=json"))
-    if(!is.data.frame(results)){
-      print("Input Valid Zip Code")
-    }
-    else {
+    if(input$zip != ""){
+      results <- make_request(paste0("/api/CSSIStation/zip/", input$zip, "?format=json"))
+      if(is.data.frame(results)){
       results$Contact <- paste(results$ContactFirstName, results$ContactLastName)
       results$Address <- paste0(results$AddressLine1, " ", results$City, ", ", results$State, " ", results$Zip)
-      if(is.null(results$Email)){
-        results <- select(results, Organization, Address, Contact, Phone1, OperationHours)
+        if(is.null(results$Email)){
+          results <- select(results, Organization, Address, Contact, Phone1, OperationHours)
+        }
+        else{
+          results <- select(results, Organization, Address, Contact, Email, Phone1, OperationHours)
+        }
+        return(results)
       }
       else{
-        results <- select(results, Organization, Address, Contact, Email, Phone1, OperationHours)
+        print("Input Valid Zip Code")
       }
-      return(results)
+    }
+    else{
+      print("Input Valid Zip Code")
     }
   })
 }
