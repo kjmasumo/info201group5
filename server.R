@@ -73,7 +73,12 @@ server <- function(input, output, session){
     else {
       results$Contact <- paste(results$ContactFirstName, results$ContactLastName)
       results$Address <- paste0(results$AddressLine1, " ", results$City, ", ", results$State, " ", results$Zip)
-      results <- select(results, Organization, Address, Contact, Email, Phone1, OperationHours)
+      if(is.null(results$Email)){
+        results <- select(results, Organization, Address, Contact, Phone1, OperationHours)
+      }
+      else{
+        results <- select(results, Organization, Address, Contact, Email, Phone1, OperationHours)
+      }
       return(results)
     }
   })
