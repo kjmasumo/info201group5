@@ -5,7 +5,7 @@ library("dplyr")
 library("ggplot2")
 
 make_request <- function(end_point){
-  base_uri <- "https://webapi.nhtsa.gov"
+  base_uri <- "https://one.nhtsa.gov/webapi"
   response <- GET(paste0(base_uri, end_point))
   body <- content(response, "text")
   parsed <- fromJSON(body)
@@ -13,19 +13,23 @@ make_request <- function(end_point){
   final
 }
 
-end_point <- "/api/SafetyRatings?format=json"
-years <- make_request(end_point)$ModelYear
+# end_point <- "/api/SafetyRatings?format=json"
+# years <- make_request(end_point)$ModelYear
 
 server <- function(input, output){
   
   curr_car <- reactive({
+    model <- input$models
+    if(!(" " %in% model)){
+      model <- gsub(" ", "%20", input$models)
+    }
     results <- make_request(paste0(
       "/api/SafetyRatings/modelyear/", 
       input$year, 
       "/make/",
       input$makes,
       "/model/",
-      input$models,
+      model,
       "?format=json"
       ))
     results$VehicleId[1]
@@ -46,6 +50,17 @@ server <- function(input, output){
     models <- make_request(paste0("/api/SafetyRatings/modelyear/", input$year, "/make/", input$makes, "?format=json"))$Model
     selectInput('models', label = 'Choose a model', choices = models)
   })
+  
+  output$inspection_location <- renderTable({
+    results <- make_request(paste0("/api/CSSIStation/zip/", input$zip, "?format=json"))
+    if(!is.data.frame(results)){
+      print("Input Valid Zip Code")
+    }
+    else {
+      return(results)
+    }
+  })
 }
 
 shinyServer(server)
+
