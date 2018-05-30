@@ -13,10 +13,6 @@ make_request <- function(end_point){
   final
 }
 
-
-# end_point <- "/api/SafetyRatings?format=json"
-# years <- make_request(end_point)$ModelYear
-
 server <- function(input, output, session){
   
   curr_car <- reactive({
@@ -36,27 +32,32 @@ server <- function(input, output, session){
     results$VehicleId[1]
   })
   
-  output$chosen_vehicle_table <- renderTable({
+  output$chosen_vehicle_table <- renderPlot({
     curr_ID <- curr_car()
     results <- make_request(paste0("/api/SafetyRatings/VehicleID/", curr_ID, "?format=json"))
-    results
+    vehicle_description <- results["VehicleDescription"]
+    results <- select(results, OverallRating, OverallFrontCrashRating, OverallSideCrashRating, RolloverRating)
+    results[results == "Not Rated"] <- 0
+    
+    tests <- colnames(results)
+    test_results <- as.numeric(as.vector(results[1,]))
+    modified <- data.frame(tests, results = test_results)
+    #modified[1, 2] <- results["VehicleDescription"]
+    car_plot <- ggplot(data = modified)+
+      geom_col(mapping = aes(tests, results), stat = "identity", fill = "blue") +
+      scale_y_continuous(limits = c(0,5)) +
+      scale_x_discrete(limits = c("OverallRating", "OverallFrontCrashRating", "OverallSideCrashRating", "RolloverRating")) +
+      labs(
+        title = paste0("Test Results for ", vehicle_description),
+        x = "Tests",
+        y = "Rating (out of 5)"
+      )
+    car_plot
   })
   
-  # observe({
-  #   makes <- make_request(paste0("/api/SafetyRatings/modelyear/", input$year, "?format=json"))$Make
-  #   #models <- make_request(paste0("/api/SafetyRatings/modelyear/", input$year, "/make/", input$makes, "?format=json"))$Model
-  #   updateSelectInput(session, 'makes', label = 'Choose a make', choices = makes)
-  #   #updateSelectInput(session, 'models', label = 'Choose a model', choices = "models")
-  # })
-  # 
-  # observe({
-  #   models <- make_request(paste0("/api/SafetyRatings/modelyear/", input$year, "/make/", input$makes, "?format=json"))$Model
-  #   updateSelectInput(session, 'models', label = 'Choose a model', choices = "models")
-  # })
-  output$make_choice <- renderUI({
-   makes <- make_request(paste0("/api/SafetyRatings/modelyear/", input$year, "?format=json"))$Make
-   selectInput('makes', label = 'Choose a make', choices = makes)
-
+  observe({
+    makes_choice <- make_request(paste0("/api/SafetyRatings/modelyear/", input$year, "?format=json"))$Make
+    updateSelectInput(session, 'makes', label = 'Choose a make', choices = makes_choice)
   })
 
   output$model_choice <- renderUI({

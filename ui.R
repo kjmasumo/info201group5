@@ -38,11 +38,16 @@ ui <- fluidPage(
             label = "Choose a year",
             choices = years
           ),
-          uiOutput("make_choice"),
+          selectInput(
+            'makes',
+            label = 'Choose a make',
+            choices = "ACURA"
+          ),
+          #uiOutput("make_choice"),
           uiOutput("model_choice")
         ),
         mainPanel(
-          tableOutput("chosen_vehicle_table")
+          plotOutput("chosen_vehicle_table")
         )
       )
     ),
@@ -50,7 +55,7 @@ ui <- fluidPage(
       "Civil Penalties",
       sidebarLayout(
         sliderInput("fee",
-          label = "Fee Amount(in dollars)", min = fee_range[1], max = fee_range[2],
+          label = "Fee Amount (in dollars)", min = fee_range[1], max = fee_range[2],
           value = fee_range
         ),
         selectInput("company", label = "Company", choices = unique(datum$Company))
