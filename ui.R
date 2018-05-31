@@ -58,13 +58,7 @@ ui <- fluidPage(
       mainPanel(
         tabsetPanel( type = "tabs",
           tabPanel("Company Penalties", plotOutput("CPbar")), 
-          tabPanel("Civil Penalty", dataTableOutput("CPtable")),
-          tabPanel("Summary", 
-                   p(
-                     "The company with the most civil penalties is ", MPphrase, "with", 
-                     MPdatum$Count," penalties."
-                     )
-               )
+          tabPanel("Civil Penalty", dataTableOutput("CPtable"))
         )
       )
     ),

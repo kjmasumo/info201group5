@@ -74,7 +74,8 @@ server <- function(input, output, session){
     car_plot <- ggplot(data = modified)+
       geom_col(mapping = aes(tests, results), stat = "identity", fill = "blue") +
       scale_y_continuous(limits = c(0,5)) +
-      scale_x_discrete(limits = c("OverallRating", "OverallFrontCrashRating", "OverallSideCrashRating", "RolloverRating")) +
+      scale_x_discrete(limits = c("OverallRating","FrontCrashDriversideRating", "FrontCrashPassengerSideRating", "OverallFrontCrashRating", "OverallSideCrashRating", "SideCrashDriversideRating", "SideCrashPassengerSideRating", "RolloverRating")) +
+      theme(axis.text.x = element_text(size = 13, angle = 50, hjust = 1)) +
       labs(
         title = paste0("Test Results for ", vehicle_description),
         x = "Tests",
