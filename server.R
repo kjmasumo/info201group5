@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 library("httr")
 library("jsonlite")
 library("knitr")
@@ -18,6 +19,9 @@ make_request <- function(end_point){
   final <- parsed$Results
   final
 }
+=======
+source("setup.R")
+>>>>>>> samuelm
 
 get_request_count <- function(end_point){
   base_uri <- "https://webapi.nhtsa.gov"
@@ -87,6 +91,7 @@ server <- function(input, output, session){
     models <- make_request(paste0("/api/SafetyRatings/modelyear/", input$year, "/make/", input$makes, "?format=json"))$Model
     selectInput('models', label = 'Choose a model', choices = models)
   })
+<<<<<<< HEAD
   
   output$inspection_location <- renderTable({
     if(input$zip != ""){
@@ -109,3 +114,16 @@ server <- function(input, output, session){
 
 shinyServer(server)
 
+=======
+
+  
+  output$CPbar <- renderPlot({
+    ggplot(data = datum) +
+      geom_bar(mapping = aes(x= Company)) +
+      theme(axis.text.x = element_text(size = 11, angle = 80, hjust = 1.2))
+  })
+  
+  output$CPtable <- renderDataTable(datum)
+}
+shinyServer(server)
+>>>>>>> samuelm

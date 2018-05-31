@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 library("httr")
 library("jsonlite")
 library("knitr")
@@ -22,6 +23,9 @@ datum <- datum %>%
   select(-AgreementDate, -PenaltyReceivedDate)
 fee_range <- range(datum$Amount)
 
+=======
+source("setup.R")
+>>>>>>> samuelm
 end_point <- "/api/SafetyRatings?format=json"
 years <- make_request(end_point)$ModelYear
 
@@ -65,6 +69,7 @@ ui <- fluidPage(
           plotOutput('chosen_year_table')
         )
       )
+<<<<<<< HEAD
     ),
     tabPanel(
       "Civil Penalties",
@@ -81,6 +86,20 @@ ui <- fluidPage(
           tabPanel("Civil Penalty", dataTableOutput("CPtable")),
           tabPanel("Fees by Year Plot", plotOutput("CPplot")),
           tabPanel("Company Penalties", plotOutput("CPbar"))
+=======
+    ), 
+    tabPanel("Civil Penalties", 
+      mainPanel(
+        tabsetPanel( type = "tabs",
+          tabPanel("Company Penalties", plotOutput("CPbar")), 
+          tabPanel("Civil Penalty", dataTableOutput("CPtable")),
+          tabPanel("Summary", 
+                   p(
+                     "The company with the most civil penalties is ", MPphrase, "with", 
+                     MPdatum$Count," penalties."
+                     )
+               )
+>>>>>>> samuelm
         )
       )
     ),

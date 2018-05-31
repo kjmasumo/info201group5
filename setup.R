@@ -2,6 +2,7 @@ library(httr)
 library(dplyr)
 library(knitr)
 library(jsonlite)
+library(ggplot2)
 
 make_request <- function(end_point){
   base_uri <- "https://one.nhtsa.gov/webapi"
@@ -15,3 +16,19 @@ make_request <- function(end_point){
 end_point2 <-"/api/CivilPenalties?format=json"
 
 datum <- make_request(end_point2)
+datum <- datum %>% 
+  select(-AgreementDate, -PenaltyReceivedDate)
+
+
+MPdatum <- datum %>% 
+  group_by(Company) %>% 
+  summarize(Count = n()) %>% 
+  filter(Count == max(Count))
+
+p <- length(MPdatum$Company)
+MPphrase <- if(p>1){
+  paste(MPdatum$Company[1],
+        paste("and", MPdatum$Company[2:p] ))
+} else{
+    MPdatum$Company
+  }
