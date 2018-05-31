@@ -1,36 +1,12 @@
-<<<<<<< HEAD
-library("httr")
-library("jsonlite")
-library("knitr")
-library("dplyr")
-library("ggplot2")
-years <- make_request("/Complaints/vehicle?format=json")$Result
+years <- make_request("/api/Complaints/vehicle?format=json")
 vector_years <- as.character(as.vector(years[,1]))
 vector_years <- vector_years[2:66]
 count <- c()
 for(year in vector_years){
-  count <- c(make_request(paste0("/Complaints/vehicle/modelyear/", year, "?format=json"))$Count, count)
+  count <- c(get_request_count(paste0("/api/Complaints/vehicle/modelyear/", year, "?format=json")), count)
 }
-make_request <- function(end_point){
-  base_uri <- "https://webapi.nhtsa.gov"
-  response <- GET(paste0(base_uri, end_point))
-  body <- content(response, "text")
-  parsed <- fromJSON(body)
-  final <- parsed$Results
-  final
-}
-=======
-source("setup.R")
->>>>>>> samuelm
 
-get_request_count <- function(end_point){
-  base_uri <- "https://webapi.nhtsa.gov"
-  response <- GET(paste0(base_uri, end_point))
-  body <- content(response, "text")
-  parsed <- fromJSON(body)
-  final <- parsed$Count
-  final
-}
+source("setup.R")
 
 server <- function(input, output, session){
   
@@ -91,7 +67,6 @@ server <- function(input, output, session){
     models <- make_request(paste0("/api/SafetyRatings/modelyear/", input$year, "/make/", input$makes, "?format=json"))$Model
     selectInput('models', label = 'Choose a model', choices = models)
   })
-<<<<<<< HEAD
   
   output$inspection_location <- renderTable({
     if(input$zip != ""){
@@ -110,13 +85,7 @@ server <- function(input, output, session){
     }
   })
   output$help <- renderText("Input valid zip code to display inspection locations")
-}
 
-shinyServer(server)
-
-=======
-
-  
   output$CPbar <- renderPlot({
     ggplot(data = datum) +
       geom_bar(mapping = aes(x= Company)) +
@@ -126,4 +95,4 @@ shinyServer(server)
   output$CPtable <- renderDataTable(datum)
 }
 shinyServer(server)
->>>>>>> samuelm
+
