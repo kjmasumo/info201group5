@@ -12,7 +12,10 @@ overall_data <- make_request("/api/SafetyRatings/VehicleId/7520?format=json")
 ac_test <- select(test, OverallRating, ComplaintsCount, VehicleDescription)
 View(ac_test)
 View(test1)
+test2 <- ""
+
 get_year_info <- function(year){
+<<<<<<< HEAD
   for (mk in make_request(paste0("/api/SafetyRatings/modelyear/", year, "?format=json"))$Make) {
     for (mdl in make_request(paste0("/api/SafetyRatings/modelyear/", year, "/make/", mk, "?format=json"))$Model) {
       for (id in make_request(paste0("/api/SafetyRatings/modelyear/", year, "/make/", mk, "/model/", gsub(" ", "%20", mdl), "?format=json"))$VehicleId){
@@ -21,14 +24,40 @@ get_year_info <- function(year){
         test <- rbind(overall_data, temp2)
       }
     }
+=======
+  makes <- make_request(paste0("/api/SafetyRatings/modelyear/", year, "?format=json"))$Make
+  for(make in makes){
+    
+>>>>>>> 5560d7dec77f27d9f30e4c5853769feb6b323b3e
   }
+  # for (i in makes) {
+  #   for (j in make_request(paste0("/api/SafetyRatings/modelyear/", year, "/make/", i, "?format=json"))$Model) {
+  #     for (h in make_request(paste0("/api/SafetyRatings/modelyear/", year, "/make/", i, "/model/", gsub(" ", "%20", j), "?format=json"))$VehicleId){
+  #       temp <- make_request(paste0("/api/SafetyRatings/VehicleId/", h, "?format=json"))
+  #       #test <- rbind(test, temp)
+  #       test2 <- c(test2, temp$VehicleDescription[1])
+  #     }
+  #   }
+  # }
+  test2
 }
 
+<<<<<<< HEAD
 update <- function(id){
   temp <- make_request(paste0("/api/SafetyRatings/VehicleID/", id, "?format=json"))
   overall_data <- rbind(overall_data, temp)
   overall_data
 }
+=======
+make_request(paste0("/api/SafetyRatings/modelyear/", 2013, "?format=json"))$Make
+j <- make_request(paste0("/api/SafetyRatings/modelyear/", 2013, "/make/", "ACURA", "?format=json"))$Model
+j2 <- gsub(" ", "%20", j)
+make_request(paste0("/api/SafetyRatings/modelyear/", 2013, "/make/", "ACURA", "/model/", "ILX%20HYBRID", "?format=json"))$VehicleId
+
+new_thing <- get_year_info("2013")
+new_thing
+
+>>>>>>> 5560d7dec77f27d9f30e4c5853769feb6b323b3e
 
 end_point <- "/api/SafetyRatings?format=jsn"
 years <- make_request(end_point)$ModelYear
