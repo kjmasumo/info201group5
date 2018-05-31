@@ -8,8 +8,6 @@ for(year in vector_years){
   recall_count <- c(get_request_count(paste0("/api/Recalls/vehicle/modelyear/", year, "?format=json")), recall_count)
 }
 
-
-
 source("setup.R")
 
 server <- function(input, output, session){

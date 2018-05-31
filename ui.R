@@ -19,8 +19,9 @@ lowest <- as.numeric(year_range[65])
 highest <- as.numeric(year_range[1])
 
 ui <- fluidPage(
+  includeCSS("style.css"),
   navbarPage(
-    "NHTSA data",
+    "NHTSA Data",
     tabPanel(
       "Car Safety Ratings",
       sidebarLayout(
