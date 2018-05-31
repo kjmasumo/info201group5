@@ -102,14 +102,9 @@ server <- function(input, output, session){
         }
         return(results)
       }
-      else{
-        print("Input Valid Zip Code")
-      }
-    }
-    else{
-      print("Input Valid Zip Code")
     }
   })
+  output$help <- renderText("Input valid zip code to display inspection locations")
 }
 
 shinyServer(server)
