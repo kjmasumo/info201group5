@@ -22,9 +22,13 @@ datum <- datum %>%
   select(-AgreementDate, -PenaltyReceivedDate)
 fee_range <- range(datum$Amount)
 
-end_point <- "/api/SafetyRatings?format=jsn"
+end_point <- "/api/SafetyRatings?format=json"
 years <- make_request(end_point)$ModelYear
 
+year_range <- make_request("/api/Complaints/vehicle?format=json")
+year_range <- year_range[-1, ]
+lowest <- as.numeric(year_range[65])
+highest <- as.numeric(year_range[1])
 
 ui <- fluidPage(
   navbarPage(
@@ -48,6 +52,17 @@ ui <- fluidPage(
         ),
         mainPanel(
           plotOutput("chosen_vehicle_table")
+        )
+      )
+    ),
+    tabPanel(
+      'Complaints Over Time',
+      sidebarLayout(
+        sidebarPanel(
+          sliderInput('year_range', label = "Year Range", min = lowest, max = highest, value = c(2000, 2001), sep = "")
+        ),
+        mainPanel(
+          plotOutput('chosen_year_table')
         )
       )
     ),

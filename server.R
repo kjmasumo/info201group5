@@ -3,7 +3,13 @@ library("jsonlite")
 library("knitr")
 library("dplyr")
 library("ggplot2")
-
+years <- make_request("/Complaints/vehicle?format=json")$Result
+vector_years <- as.character(as.vector(years[,1]))
+vector_years <- vector_years[2:66]
+count <- c()
+for(year in vector_years){
+  count <- c(make_request(paste0("/Complaints/vehicle/modelyear/", year, "?format=json"))$Count, count)
+}
 make_request <- function(end_point){
   base_uri <- "https://webapi.nhtsa.gov"
   response <- GET(paste0(base_uri, end_point))
@@ -13,7 +19,24 @@ make_request <- function(end_point){
   final
 }
 
+get_request_count <- function(end_point){
+  base_uri <- "https://webapi.nhtsa.gov"
+  response <- GET(paste0(base_uri, end_point))
+  body <- content(response, "text")
+  parsed <- fromJSON(body)
+  final <- parsed$Count
+  final
+}
+
 server <- function(input, output, session){
+  
+  output$chosen_year_table <- renderPlot({
+    count_reversed <- rev(count)
+    makers_complained <- data.frame(vector_years, count_reversed)
+    complaint_plot <- ggplot(data = makers_complained)+
+      geom_point(mapping = aes(x = vector_years, y = count_reversed))
+    complaint_plot
+  })
   
   curr_car <- reactive({
     model <- input$models
