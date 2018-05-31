@@ -114,7 +114,7 @@ server <- function(input, output, session){
   output$CPbar <- renderPlot({
     ggplot(data = datum) +
       geom_bar(mapping = aes(x= Company)) +
-      theme(axis.text.x = element_text(size = 11, angle = 80, hjust = 1.2))
+      theme(axis.text.x = element_text(size = 11, angle = 90, hjust = 0.5))
   })
   
   output$CPtable <- renderDataTable(datum)
