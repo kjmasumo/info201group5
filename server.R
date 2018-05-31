@@ -1,21 +1,46 @@
 years <- make_request("/api/Complaints/vehicle?format=json")
 vector_years <- as.character(as.vector(years[,1]))
 vector_years <- vector_years[2:66]
-count <- c()
+complaint_count <- c()
+recall_count <- c()
 for(year in vector_years){
-  count <- c(get_request_count(paste0("/api/Complaints/vehicle/modelyear/", year, "?format=json")), count)
+  complaint_count <- c(get_request_count(paste0("/api/Complaints/vehicle/modelyear/", year, "?format=json")), complaint_count)
+  recall_count <- c(get_request_count(paste0("/api/Recalls/vehicle/modelyear/", year, "?format=json")), recall_count)
 }
+
+
 
 source("setup.R")
 
 server <- function(input, output, session){
   
   output$chosen_year_table <- renderPlot({
-    count_reversed <- rev(count)
-    makers_complained <- data.frame(vector_years, count_reversed)
-    complaint_plot <- ggplot(data = makers_complained)+
-      geom_point(mapping = aes(x = vector_years, y = count_reversed))
-    complaint_plot
+    if(input$plot_choice == "Complaints"){
+      count_reversed <- rev(complaint_count)
+      makers_complained <- data.frame(vector_years, count_reversed)
+      result_plot <- ggplot(data = makers_complained)+
+        geom_point(mapping = aes(x = vector_years, y = count_reversed)) +
+        geom_smooth(mapping = aes(x = vector_years, y = count_reversed)) +
+        theme(axis.text.x = element_text(size = 11, angle = 90, hjust = 0))+
+        labs(
+          x = "Year",
+          y = "Cars Complained About",
+          title = "Total Cars Complained About Over Time"
+        )
+    }else{
+      count_reversed <- rev(recall_count)
+      makers_recalled <- data.frame(vector_years, count_reversed)
+      result_plot <- ggplot(data = makers_recalled)+
+        geom_point(mapping = aes(x = vector_years, y = count_reversed)) +
+        geom_smooth(mapping = aes(x = vector_years, y = count_reversed)) +
+        theme(axis.text.x = element_text(size = 11, angle = 90, hjust = 0))+
+        labs(
+          x = "Year",
+          y = "Cars with Recalls",
+          title = "Total Cars that had a Part Recalled Over Time"
+        )
+    }
+    result_plot
   })
   
   curr_car <- reactive({

@@ -44,10 +44,10 @@ ui <- fluidPage(
       )
     ),
     tabPanel(
-      'Complaints Over Time',
+      'Complaints and Recalls Over Time',
       sidebarLayout(
         sidebarPanel(
-          sliderInput('year_range', label = "Year Range", min = lowest, max = highest, value = c(2000, 2001), sep = "")
+          radioButtons('plot_choice', label = "Choose which plot to view", choices = c("Complaints", "Recalls"))
         ),
         mainPanel(
           plotOutput('chosen_year_table')
