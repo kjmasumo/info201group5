@@ -1,16 +1,4 @@
-library("httr")
-library("jsonlite")
-library("knitr")
-library("dplyr")
-
-make_request <- function(end_point){
-  base_uri <- "https://one.nhtsa.gov/webapi"
-  response <- GET(paste0(base_uri, end_point))
-  body <- content(response, "text")
-  parsed <- fromJSON(body)
-  final <- parsed$Results
-  final
-}
+source("setup.R")
 
 # end_point <- "/api/SafetyRatings?format=json"
 # years <- make_request(end_point)$ModelYear
@@ -49,6 +37,14 @@ server <- function(input, output){
     models <- make_request(paste0("/api/SafetyRatings/modelyear/", input$year, "/make/", input$makes, "?format=json"))$Model
     selectInput('models', label = 'Choose a model', choices = models)
   })
-}
 
+  
+  output$CPbar <- renderPlot({
+    ggplot(data = datum) +
+      geom_bar(mapping = aes(x= Company)) +
+      theme(axis.text.x = element_text(size = 11, angle = 80, hjust = 1.2))
+  })
+  
+  output$CPtable <- renderDataTable(datum)
+}
 shinyServer(server)
