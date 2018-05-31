@@ -1,5 +1,11 @@
+library("httr")
+library("jsonlite")
+library("knitr")
+library("dplyr")
+library("shiny")
+
 make_request <- function(end_point){
-  base_uri <- "https://one.nhtsa.gov/webapi"
+  base_uri <- "https://webapi.nhtsa.gov"
   response <- GET(paste0(base_uri, end_point))
   body <- content(response, "text")
   parsed <- fromJSON(body)
@@ -16,43 +22,87 @@ datum <- datum %>%
   select(-AgreementDate, -PenaltyReceivedDate)
 fee_range <- range(datum$Amount)
 
-end_point <- "/api/SafetyRatings?format=jsn"
+end_point <- "/api/SafetyRatings?format=json"
 years <- make_request(end_point)$ModelYear
 
+year_range <- make_request("/api/Complaints/vehicle?format=json")
+year_range <- year_range[-1, ]
+lowest <- as.numeric(year_range[65])
+highest <- as.numeric(year_range[1])
 
 ui <- fluidPage(
-  navbarPage("NHTSA data", 
-    tabPanel("Car Safety Ratings",
+  navbarPage(
+    "NHTSA data",
+    tabPanel(
+      "Car Safety Ratings",
       sidebarLayout(
         sidebarPanel(
           selectInput(
-            'year',
+            "year",
             label = "Choose a year",
             choices = years
           ),
-          uiOutput('make_choice'),
-          uiOutput('model_choice')
+          selectInput(
+            'makes',
+            label = 'Choose a make',
+            choices = "ACURA"
+          ),
+          #uiOutput("make_choice"),
+          uiOutput("model_choice")
         ),
         mainPanel(
-          tableOutput('chosen_vehicle_table')
+          plotOutput("chosen_vehicle_table")
         )
       )
-    ), 
-    tabPanel("Civil Penalties",
+    ),
+    tabPanel(
+      'Complaints Over Time',
       sidebarLayout(
-        sliderInput("fee", label = "Fee Amount(in dollars)", min = fee_range[1], max = fee_range[2],
-                    value = fee_range), 
+        sidebarPanel(
+          sliderInput('year_range', label = "Year Range", min = lowest, max = highest, value = c(2000, 2001), sep = "")
+        ),
+        mainPanel(
+          plotOutput('chosen_year_table')
+        )
+      )
+    ),
+    tabPanel(
+      "Civil Penalties",
+      sidebarLayout(
+        sliderInput("fee",
+          label = "Fee Amount (in dollars)", min = fee_range[1], max = fee_range[2],
+          value = fee_range
+        ),
         selectInput("company", label = "Company", choices = unique(datum$Company))
-      ), 
+      ),
       mainPanel(
-        tabsetPanel( type = "tabs", 
-          tabPanel("Civil Penalty", dataTableOutput("CPtable")), 
-          tabPanel("Fees by Year Plot", plotOutput("CPplot")), 
+        tabsetPanel(
+          type = "tabs",
+          tabPanel("Civil Penalty", dataTableOutput("CPtable")),
+          tabPanel("Fees by Year Plot", plotOutput("CPplot")),
           tabPanel("Company Penalties", plotOutput("CPbar"))
         )
       )
-    )
+    ),
+    tabPanel(
+      "Child Seat Inspection Locations",
+      sidebarLayout(
+        sidebarPanel(
+          textInput("zip", label = "Zip Code", value = 90210),
+          textOutput("help")
+        ),
+        mainPanel(
+          tableOutput("inspection_location")
+        )
+      )
+    ),
+  # Stops errors from displaying.
+  tags$style(type="text/css",
+             ".shiny-output-error { visibility: hidden; }",
+             ".shiny-output-error:before { visibility: hidden; }"
   )
 )
+)
+
 
 shinyUI(ui)
