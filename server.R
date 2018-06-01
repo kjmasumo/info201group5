@@ -1,12 +1,16 @@
-years <- make_request("/api/Complaints/vehicle?format=json")
-vector_years <- as.character(as.vector(years[,1]))
-vector_years <- vector_years[2:66]
-complaint_count <- c()
-recall_count <- c()
-for(year in vector_years){
-  complaint_count <- c(get_request_count(paste0("/api/Complaints/vehicle/modelyear/", year, "?format=json")), complaint_count)
-  recall_count <- c(get_request_count(paste0("/api/Recalls/vehicle/modelyear/", year, "?format=json")), recall_count)
-}
+# years <- make_request("/api/Complaints/vehicle?format=json")
+# vector_years <- as.character(as.vector(years[,1]))
+# vector_years <- vector_years[2:66]
+# complaint_count <- c()
+# recall_count <- c()
+# for(year in vector_years){
+#   complaint_count <- c(get_request_count(paste0("/api/Complaints/vehicle/modelyear/", year, "?format=json")), complaint_count)
+#   recall_count <- c(get_request_count(paste0("/api/Recalls/vehicle/modelyear/", year, "?format=json")), recall_count)
+# }
+# write.csv(makers_complained, file = "data/makers_complained.csv")
+# write.csv(makers_recalled, file = "data/makers_recalled.csv")
+makers_complained <- read.csv("data/makers_complained.csv", stringsAsFactors = F)
+makers_recalled <- read.csv("data/makers_recalled.csv", stringsAsFactors = F)
 
 source("setup.R")
 
@@ -14,8 +18,6 @@ server <- function(input, output, session){
   
   output$chosen_year_table <- renderPlot({
     if(input$plot_choice == "Complaints"){
-      count_reversed <- rev(complaint_count)
-      makers_complained <- data.frame(vector_years, count_reversed)
       result_plot <- ggplot(data = makers_complained)+
         geom_point(mapping = aes(x = vector_years, y = count_reversed)) +
         geom_smooth(mapping = aes(x = vector_years, y = count_reversed)) +
@@ -26,8 +28,6 @@ server <- function(input, output, session){
           title = "Total Cars Complained About Over Time"
         )
     }else{
-      count_reversed <- rev(recall_count)
-      makers_recalled <- data.frame(vector_years, count_reversed)
       result_plot <- ggplot(data = makers_recalled)+
         geom_point(mapping = aes(x = vector_years, y = count_reversed)) +
         geom_smooth(mapping = aes(x = vector_years, y = count_reversed)) +

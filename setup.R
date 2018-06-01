@@ -3,6 +3,8 @@ library(dplyr)
 library(knitr)
 library(jsonlite)
 library(ggplot2)
+library(shiny)
+library(rsconnect)
 
 make_request <- function(end_point){
   base_uri <- "https://webapi.nhtsa.gov"
