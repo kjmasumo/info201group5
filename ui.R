@@ -1,3 +1,11 @@
+library(httr)
+library(dplyr)
+library(knitr)
+library(jsonlite)
+library(ggplot2)
+library(shiny)
+library(rsconnect)
+
 base_uri <- "https://one.nhtsa.gov/webapi"
 end_point2 <-"/api/CivilPenalties?format=json"
 response <- GET(paste0(base_uri, end_point2))

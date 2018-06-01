@@ -9,6 +9,13 @@
 # }
 # write.csv(makers_complained, file = "data/makers_complained.csv")
 # write.csv(makers_recalled, file = "data/makers_recalled.csv")
+library(httr)
+library(dplyr)
+library(knitr)
+library(jsonlite)
+library(ggplot2)
+library(shiny)
+library(rsconnect)
 makers_complained <- read.csv("data/makers_complained.csv", stringsAsFactors = F)
 makers_recalled <- read.csv("data/makers_recalled.csv", stringsAsFactors = F)
 

@@ -5,9 +5,8 @@ account: kjmeua
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 351983
-bundleId: 1405975
+bundleId: 1406029
 url: https://kjmeua.shinyapps.io/info201group5/
-when: 1527885363.95245
+when: 1527886604.03402
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: background.jpg
